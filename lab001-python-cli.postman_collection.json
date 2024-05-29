@@ -1,0 +1,208 @@
+{
+	"info": {
+		"_postman_id": "28b557cf-fcb0-46ca-bbb8-0ec2550601d8",
+		"name": "lab001-python-cli",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Lookup Models",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "1234QWer!",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "expert",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/yang-data+json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/yang-data+json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "https://{{host}}:{{port}}/restconf/data/netconf-state/capabilities",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"restconf",
+						"data",
+						"netconf-state",
+						"capabilities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lookup Communities Native",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/yang-data+json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/yang-data+json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "https://{{host}}:{{port}}/restconf/data/Cisco-IOS-XE-native:native/snmp-server/community-config",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"restconf",
+						"data",
+						"Cisco-IOS-XE-native:native",
+						"snmp-server",
+						"community-config"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Community Native",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/yang-data+json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/yang-data+json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"Cisco-IOS-XE-snmp:community-config\": [\n        {\n            \"name\": \"NEWCom\",\n            \"permission\": \"ro\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{host}}:{{port}}/restconf/data/Cisco-IOS-XE-native:native/snmp-server/",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"restconf",
+						"data",
+						"Cisco-IOS-XE-native:native",
+						"snmp-server",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Communities Native",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{password}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{username}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/yang-data+json",
+						"type": "default"
+					},
+					{
+						"key": "Accept",
+						"value": "application/yang-data+json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "https://{{host}}:{{port}}/restconf/data/Cisco-IOS-XE-native:native/snmp-server/community-config=pythonblah",
+					"protocol": "https",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"restconf",
+						"data",
+						"Cisco-IOS-XE-native:native",
+						"snmp-server",
+						"community-config=pythonblah"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

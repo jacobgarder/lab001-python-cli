@@ -1,0 +1,11 @@
+---
+- device_name: rtr-sp03 
+  address: 192.168.5.116
+- device_name: rtr-sp04
+  address: 192.168.5.117
+- device_name: rtr-edge-03
+  address: 192.168.5.118
+  restconf: True
+- device_name: rtr-edge-04 
+  address: 192.168.5.119
+  restconf: True

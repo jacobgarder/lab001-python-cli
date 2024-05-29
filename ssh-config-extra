@@ -1,0 +1,4 @@
+Host 192.168.5.* 
+  Ciphers aes128-cbc,aes128-ctr,aes192-ctr,aes256-ctr
+  KexAlgorithms +diffie-hellman-group14-sha1,diffie-hellman-group1-sha1
+  HostKeyAlgorithms +ssh-rsa  
