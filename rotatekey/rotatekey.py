@@ -26,6 +26,13 @@ from .utils.utils import debug_msg, check_result
 #       - Also available with shorter "-i" option
 #       - Default to the value "inventory.yaml"
 # TODO: Add an option "--prefer-restconf" that controls whether the tool will attempt to use RESTCONF for all communications
+
+@click.group()
+@click.option('--debug',  is_flag=True, default=False, help="Print debug messages during procesing")
+@click.option('--cli-verbose', is_flag=True, help="Stream CLI connection info to screen")
+@click.option('--prefer-restconf',  is_flag=True, help="Attempt to use RESTCONF even if not defined in inventory.")
+@click.option('--inventory','-i', help="The network inventory file to operate on", default='inventory.yaml')
+@click.pass_context
 def cli(ctx, inventory, debug, cli_verbose, prefer_restconf):
     """
     Utilities for rotating network secrets and keys.
@@ -44,8 +51,8 @@ def cli(ctx, inventory, debug, cli_verbose, prefer_restconf):
     """
     # Check for network credentials set as environment variables
     if "NETWORK_USERNAME" not in os.environ or "NETWORK_PASSWORD" not in os.environ:
-        # TODO: This error message should be printed in red text
-        print("ERROR: You must set the NETWORK_USERNAME and NETWORK_PASSWORD environment variables.")
+
+        click.secho("ERROR: You must set the NETWORK_USERNAME and NETWORK_PASSWORD environment variables.", fg='red')
         exit(1)
 
     # ensure that ctx.obj exists and is a dict (in case `cli()` is called
@@ -80,21 +87,18 @@ def cli(ctx, inventory, debug, cli_verbose, prefer_restconf):
             device["restconf"] = False
 
 
-# TODO: Make check_inventory a new subcommand to the CLI command as `rotatekey check-inventory`
-#       - Set a good help message for command an all options
-#       - Ensure the command has access to the command context object
+@cli.command()
+@click.pass_context
 def check_inventory(ctx):
     """
     Display status of communication protocols for each device in inventory.
-
-    Args:
-        ctx (Click.Context):
     """
     for device in ctx.obj["inventory"]:
-        print(f"Device {device['device_name']} RESTCONF enabled: {device['restconf']}")
+        click.echo(f"Device {device['device_name']} RESTCONF enabled: {device['restconf']}")
 
 
 # TODO: Make snmp a new command group under the CLI command as `rotatekey snmp`
+@cli.group()
 def snmp():
     """
     Manipulate the SNMP communities configured on network devices.
@@ -102,18 +106,14 @@ def snmp():
     pass
 
 
-# TODO: Make snmp_list a subcommand to the CLI command as `rotatekey snmp list`
-#       - Set a good help message for command an all options
-#       - Ensure the command has access to the command context object
+@snmp.command('list')
+@click.pass_context
 def snmp_list(ctx):
     """
     Lookup and list the SNMP communities created on the devices in inventory.
-
-    Args:
-        ctx (Click.Context):
     """
-    print(f"{'Device':15} {'Community':15} {'Rights':5}")
-    print("-" * 40)
+    click.echo(f"{'Device':15} {'Community':15} {'Rights':5}")
+    click.echo("-" * 40)
     for device in ctx.obj["inventory"]:
         debug_msg(ctx.obj["debug"], f"Processing device {device['device_name']}")
         # Use RESTCONF if it is enabled
@@ -141,37 +141,22 @@ def snmp_list(ctx):
         device_manager.disconnect()
 
 
-# TODO: Make snmp_update a subcommand to the CLI command as `rotatekey snmp update`
-#       - Set a good help message for command an all options
-#       - Ensure the command has access to the command context object
-# TODO: Support the following options
-#       - "--delete-current" : Option that when enabled will result in all current communities to be deleted
-#           - Also available with short "-d"
-#       - "--ro-community" : The new Read Only string to create
-#           - Also available with short "--ro"
-#       - "--rw-community" : The new Read/Write string to create
-#           - Also available with short "--rw"
+@snmp.command('update')
+@click.option('--delete-current','-d', is_flag=True, help="Whether to delete all current SNMP communities")
+@click.option('--ro-community', '--ro', help='The new Read-Only community string to create')
+@click.option('--rw-community', '--rw', help="The new Read-Write community string to create")
+@click.pass_context
 def snmp_update(ctx, delete_current: bool, ro_community: str, rw_community: str):
     """
     Update the SNMP community strings configured on devices in the inventory.
-
-    Args:
-        ctx (Click.Context):
-        delete_current (bool):
-        ro_community (str):
-        rw_community (str):
-    Returns:
     """
     print("Updating the network devices to: ")
     if delete_current:
-        # TODO: The following message should be printed to the screen in red text
-        print("  - All currently configured SNMP community strings will be removed")
+        click.secho("  - All currently configured SNMP community strings will be removed", fg='red')
     if ro_community:
-        # TODO: The following message should be printed to the screen in blue text
-        print(f"  - A new read-only community string '{ro_community}' will be created")
+        click.secho(f"  - A new read-only community string '{ro_community}' will be created", fg='blue')
     if rw_community:
-        # TODO: The following message should be printed to the screen in green text
-        print(f"  - A new read-write community string '{rw_community}' will be created")
+        click.secho(f"  - A new read-write community string '{rw_community}' will be created", fg='green')
 
     # Loop through each device in inventory
     for device in ctx.obj["inventory"]:
@@ -226,3 +211,5 @@ def snmp_update(ctx, delete_current: bool, ro_community: str, rw_community: str)
 
 
 # TODO: All commands and subcommands to the CLI application
+if __name__ == '__main__':
+    cli()
